@@ -68,6 +68,29 @@ class GlobalCom extends React.Component {
         );
     }
 
+    localStateSave = () => {
+        
+        if (this.state.red) {
+            sessionStorage.setItem('color', 'red');
+            sessionStorage.setItem('colorRun', 'null');
+        } else if (this.state.yellow && this.state.greenIn) {
+            sessionStorage.setItem('color', 'yellow');
+            sessionStorage.setItem('colorRun', 'greenIn'); 
+        } else if (this.state.yellow && this.state.redIn) {
+            sessionStorage.setItem('color', 'yellow');
+            sessionStorage.setItem('colorRun', 'redIn');
+        } else if (this.state.green) {
+            sessionStorage.setItem('color', 'green');
+            sessionStorage.setItem('colorRun', 'null');
+        }   
+    }
+
+    localStateClear = () => {             
+            sessionStorage.removeItem('color');
+            sessionStorage.removeItem('colorRun');
+    }   
+    
+
     timeUp() {
         let stateTime = this.state.seconds;
         --stateTime;
@@ -88,28 +111,21 @@ class GlobalCom extends React.Component {
                 this.setState({ greenIn: true });
                 this.setState({ redIn: false });
 
-                sessionStorage.setItem('color', 'yellow');
-                sessionStorage.setItem('colorRun', 'greenIn');
             }
             else if (this.state.yellow && this.state.greenIn) {
 
                 this.setState({ green: true });
                 this.setState({ seconds: 10 });
 
-                this.setState({ yellow: false });
-
-                sessionStorage.setItem('color', 'green');
+                this.setState({ yellow: false });               
 
             }
             else if (this.state.yellow && this.state.redIn) {
 
                 this.setState({ red: true });
                 this.setState({ seconds: 10 });
-
                 this.setState({ yellow: false });
-
-                sessionStorage.setItem('color', 'red');
-
+               
             }
 
             else if (this.state.green) {
@@ -121,8 +137,6 @@ class GlobalCom extends React.Component {
                 this.setState({ redIn: true });
                 this.setState({ greenIn: false });
 
-                sessionStorage.setItem('color', 'yellow');
-                sessionStorage.setItem('colorRun', 'redIn');
             }
         }
     }
@@ -131,7 +145,13 @@ class GlobalCom extends React.Component {
         return (
 
             <div>
-                <ColorStatus green = {this.state.green} yellow = {this.state.yellow} red = {this.state.red} />
+                <ColorStatus 
+                green = {this.state.green} 
+                yellow = {this.state.yellow} 
+                red = {this.state.red} 
+                localStateSave = {this.localStateSave} 
+                localStateClear = {this.localStateClear}/>
+
                 <TimerStatus time = {this.state.seconds}/>
             </div>                      
 
@@ -143,7 +163,4 @@ class GlobalCom extends React.Component {
 
 ReactDOM.render(<GlobalCom />, document.getElementById('root'));
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
